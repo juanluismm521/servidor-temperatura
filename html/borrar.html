@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Servidor de temperatura</title>
+    <link rel="stylesheet" href="/css/bootstrap.css" />
+  </head>
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/front.js"></script>
+
+  <body style="background-color: #00002a">
+    <h1 style="color: white">Historial de temperatura</h1>
+    <h2 style="color: white">Introduzca la contraseña para borrar datos</h2>
+    <form id="form-borrar" action="/borrar/confirm" enctype="application/x-www-form-urlencoded" method="post">
+        <div class="form-group">
+          <input type="password" class="form-control" name="pass" value="" id="pass" placeholder="Password">
+        </div>
+        <button class="btn btn-primary" type="submit">Borrar datos</button>
+      </form>
+  </body>
+  <script
+    src="https://code.jquery.com/jquery-3.6.1.js"
+    integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+    crossorigin="anonymous"
+  ></script>
+</html>
