@@ -17,6 +17,7 @@ function carga() {
         nuevaFila += '<th scope="row">' + i + '</th>';
         nuevaFila += "<td>" + datos[i].fecha + "</td>";
         nuevaFila += "<td>" + datos[i].temperatura + "</td>";
+        nuevaFila += "<td>" + datos[i].humedad + "</td>";
         nuevaFila += "</tr>";
         $(nuevaFila).appendTo("#tbody");
       }

@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 const PORT = 80;
 const app = express();
 
-const PASS_BORRADO = "1234"
+const PASS_BORRADO = "Industriales_1234"
 
 app.use(
   "/css",
@@ -33,30 +33,15 @@ app.get("/", function (req, res) {
   console.log("Se ha conectado alguien " + req.ip);
 });
 
-app.get("/add/:temperatura", function (req, res) {
-  const temperatura = parseFloat(req.params.temperatura);
+app.post("/add", function (req, res) {
+  const temperatura = parseFloat(req.body.temperatura);
+  const humedad = parseFloat(req.body.humedad);
 
-  if (isNaN(temperatura)) {
-    res.status(400).send("El parámetro 'temperatura' no es un número válido");
+  if (isNaN(temperatura) || isNaN(humedad)) {
+    res.status(400).send("Los parámetros 'temperatura' y 'humedad' deben ser números válidos");
   } else {
     try {
-      addData(temperatura);
-      res.status(200).sendFile(path.join(__dirname, "/html/index.html"));
-    } catch (error) {
-      console.error("Error al procesar la solicitud:", error);
-      res.status(500).send("Error interno del servidor");
-    }
-  }
-});
-
-app.post("/add/:temperatura", function (req, res) {
-  const temperatura = parseFloat(req.params.temperatura);
-
-  if (isNaN(temperatura)) {
-    res.status(400).send("El parámetro 'temperatura' no es un número válido");
-  } else {
-    try {
-      addData(temperatura);
+      addData(temperatura, humedad);
       res.status(200).sendFile(path.join(__dirname, "/html/index.html"));
     } catch (error) {
       console.error("Error al procesar la solicitud:", error);
@@ -77,7 +62,7 @@ app.post("/borrar/confirm", function (req, res) {
   
   if(req.body.pass === PASS_BORRADO){
   vaciarData();
-  res.status(200).sendFile(__dirname + "/html/index.html");
+  res.redirect('/');
   }else{
     res.status(401).send("Contraseña incorrecta");
   }
@@ -93,18 +78,32 @@ app.listen(PORT);
 console.log(`Server iniciado en el puerto ${PORT}`);
 module.exports = app;
 
-function addData(dato) {
+function addData(temperatura, humedad) {
+  const dataFilePath = "./data/data.json";
+
+  // Leer el archivo existente si existe
+  let data = [];
+  try {
+    const existingData = fs.readFileSync(dataFilePath, 'utf8');
+    data = JSON.parse(existingData);
+  } catch (error) {
+    console.error("Error al leer el archivo de datos:", error);
+  }
+
+  // Crear la nueva entrada
   const entrada = {
     fecha: front.ahora(),
-    temperatura: dato,
+    temperatura: temperatura,
+    humedad: humedad,
   };
 
   data.push(entrada);
-  fs.writeFile("./data/data.json", JSON.stringify(data), (err) => {
+
+  fs.writeFile(dataFilePath, JSON.stringify(data), (err) => {
     if (err) {
-      console.log("Error al añadir una nueva entrada", err);
+      console.error("Error al añadir una nueva entrada:", err);
     } else {
-      console.log("Se ha añadido una nueva entrada");
+      console.log("Se ha añadido una nueva entrada:", entrada);
     }
   });
 }
